@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     description: 'ゲーム技術、AI、制作日記、日常、趣味エンタメの最新情報をまとめたポータルサイト',
     images: [
       {
-        url: '/images/hero-game.jpg', // Placeholder global OGP mapping
+        url: '/images/hero-bg.png', // Main hero background as default OGP
         width: 1200,
         height: 630,
         alt: 'Portal Hub - ブログ＆まとめポータル',
@@ -56,21 +56,12 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Portal Hub - ブログ＆まとめポータル',
     description: 'ゲーム技術、AI、制作日記、日常、趣味エンタメの最新情報をまとめたポータルサイト',
-    images: ['/images/hero-game.jpg'],
+    images: ['/images/hero-bg.png'],
   },
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
+        url: '/icon.png',
       },
     ],
     apple: '/apple-icon.png',

@@ -57,11 +57,11 @@ export default async function Home() {
 
   const latestArticles: LatestArticle[] = (latestData.data || []).map((post) => {
     const defaultImages: Record<string, string> = {
-      game_tech: "/images/hero-game.jpg",
-      ai_tech: "/images/hero-ai.jpg",
-      dev_diary: "/images/hero-diary.jpg",
-      daily_life: "/images/hero-diary.jpg", // placeholder if none
-      hobbies: "/images/hero-diary.jpg",
+      game_tech: "/images/hero-game.png",
+      ai_tech: "/images/hero-ai.png",
+      dev_diary: "/images/hero-diary.png",
+      daily_life: "/images/hero-daily.png",
+      hobbies: "/images/hero-hobbies.png",
     };
 
     // Map enum back to display name
@@ -79,7 +79,7 @@ export default async function Home() {
       date: new Date(post.created_at).toLocaleDateString('ja-JP').replace(/\//g, '.'),
       category: displayNames[post.category] || post.category,
       categoryKey: post.category as any,
-      image: post.thumbnail_url || defaultImages[post.category] || "/images/hero-game.jpg",
+      image: post.thumbnail_url || defaultImages[post.category] || "/images/hero-game.png",
       slug: post.slug,
     };
   });
@@ -108,7 +108,7 @@ export default async function Home() {
       name: 'Portal Hub',
       logo: {
         '@type': 'ImageObject',
-        url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/icon.svg`
+        url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/icon.png`
       }
     }
   };

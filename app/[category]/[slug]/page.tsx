@@ -56,7 +56,7 @@ export async function generateMetadata(
             siteName: 'Portal Hub',
             images: [
                 {
-                    url: post.thumbnail_url || `/images/hero-${category === 'game_tech' ? 'game' : category === 'ai_tech' ? 'ai' : 'diary'}.jpg`,
+                    url: post.thumbnail_url || `/images/hero-${category === 'game_tech' ? 'game' : category === 'ai_tech' ? 'ai' : category === 'dev_diary' ? 'diary' : category === 'daily_life' ? 'daily' : 'hobbies'}.png`,
                     width: 1200,
                     height: 630,
                 },
@@ -70,8 +70,7 @@ export async function generateMetadata(
         twitter: {
             card: 'summary_large_image',
             title: post.title,
-            description: plainText,
-            images: [post.thumbnail_url || `/images/hero-${category === 'game_tech' ? 'game' : category === 'ai_tech' ? 'ai' : 'diary'}.jpg`],
+            images: [post.thumbnail_url || `/images/hero-${category === 'game_tech' ? 'game' : category === 'ai_tech' ? 'ai' : category === 'dev_diary' ? 'diary' : category === 'daily_life' ? 'daily' : 'hobbies'}.png`],
         },
     }
 }
@@ -107,7 +106,7 @@ export default async function ArticlePage({ params }: Props) {
         .order('created_at', { ascending: false })
         .limit(3);
 
-    const defaultImage = `/images/hero-${category === 'game_tech' ? 'game' : category === 'ai_tech' ? 'ai' : 'diary'}.jpg`;
+    const defaultImage = `/images/hero-${category === 'game_tech' ? 'game' : category === 'ai_tech' ? 'ai' : category === 'dev_diary' ? 'diary' : category === 'daily_life' ? 'daily' : 'hobbies'}.png`;
     const postImage = post.thumbnail_url || defaultImage;
 
     // Format dates

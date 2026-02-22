@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, X, Zap } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import Image from "next/image";
 
 const navLinks = [
   { label: "ホーム", href: "#" },
@@ -19,8 +20,8 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
         <a href="#" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground">
-            <Zap className="h-4 w-4 text-background" />
+          <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-foreground">
+            <Image src="/icon.png" alt="Portal Hub" width={32} height={32} className="object-cover" />
           </div>
           <span className="text-lg font-bold tracking-tight text-foreground">
             Portal Hub
