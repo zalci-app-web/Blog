@@ -16,6 +16,7 @@ export type Database = {
                     slug: string
                     content: string
                     category: 'game_tech' | 'ai_tech' | 'dev_diary' | 'daily_life' | 'hobbies'
+                    seo_description: string | null
                     thumbnail_url: string | null
                     created_at: string
                     updated_at: string
@@ -26,6 +27,7 @@ export type Database = {
                     slug: string
                     content: string
                     category: 'game_tech' | 'ai_tech' | 'dev_diary' | 'daily_life' | 'hobbies'
+                    seo_description?: string | null
                     thumbnail_url?: string | null
                     created_at?: string
                     updated_at?: string
@@ -36,6 +38,7 @@ export type Database = {
                     slug?: string
                     content?: string
                     category?: 'game_tech' | 'ai_tech' | 'dev_diary' | 'daily_life' | 'hobbies'
+                    seo_description?: string | null
                     thumbnail_url?: string | null
                     created_at?: string
                     updated_at?: string

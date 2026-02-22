@@ -6,6 +6,8 @@ import Link from "next/link";
 import { Clock, Home, ChevronRight, CalendarDays, Share2, Twitter, FileText } from "lucide-react";
 import { notFound } from "next/navigation";
 import type { Metadata, ResolvingMetadata } from 'next';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const categoryMap: Record<string, { enum: 'game_tech' | 'ai_tech' | 'dev_diary' | 'daily_life' | 'hobbies', title: string, color: string }> = {
     "game_tech": { enum: "game_tech", title: "ゲーム技術", color: "text-green-400 bg-green-500/20 border-green-500/30" },
@@ -32,7 +34,7 @@ export async function generateMetadata(
     const supabase = await createClient();
     const { data: post } = await supabase
         .from('posts')
-        .select('title, content, thumbnail_url, category, created_at, updated_at, slug')
+        .select('title, content, thumbnail_url, category, created_at, updated_at, slug, seo_description')
         .eq('slug', slug)
         .single();
 
@@ -41,8 +43,8 @@ export async function generateMetadata(
     }
 
     const categoryName = categoryMap[category].title;
-    // 簡易的にdescription生成 (Markdownの場合はパースが必要だが、今回は先頭100文字を抽出)
-    const plainText = post.content.replace(/[#*`_~>-]/g, '').slice(0, 120) + (post.content.length > 120 ? '...' : '');
+    // SEO descriptionが設定されていればそれを使用し、なければ本文の先頭から抽出
+    const plainText = post.seo_description || post.content.replace(/[#*`_~>-]/g, '').slice(0, 120) + (post.content.length > 120 ? '...' : '');
 
     return {
         title: `${post.title} | ${categoryName}`,
@@ -194,12 +196,11 @@ export default async function ArticlePage({ params }: Props) {
                                 />
                             </div>
 
-                            {/* MDX or Text Content 
-                  In a real world app, we'd use remark/rehype or next-mdx-remote to parse markdown.
-                  Here we render it in white-space pre-wrap for simplicity.
-              */}
-                            <div className="prose prose-zinc dark:prose-invert max-w-none text-foreground/90 leading-relaxed font-sans mt-8">
-                                <div className="whitespace-pre-wrap">{post.content}</div>
+                            {/* Markdown Rendered Content */}
+                            <div className="prose prose-zinc dark:prose-invert prose-headings:font-bold prose-h2:border-b prose-h2:pb-2 prose-h2:mt-10 prose-h3:mt-8 prose-a:text-primary prose-a:no-underline hover:prose-a:underline max-w-none text-foreground/90 leading-relaxed font-sans mt-8 bg-card/50 p-6 md:p-10 rounded-xl border border-border/50 shadow-sm">
+                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                    {post.content}
+                                </ReactMarkdown>
                             </div>
 
                             {/* Interaction / Share */}

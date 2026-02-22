@@ -8,6 +8,7 @@ CREATE TABLE posts (
   slug TEXT NOT NULL UNIQUE,
   content TEXT NOT NULL,
   category post_category NOT NULL,
+  seo_description TEXT,
   thumbnail_url TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
