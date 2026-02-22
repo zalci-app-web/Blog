@@ -24,6 +24,11 @@ export const metadata: Metadata = {
     default: 'Portal Hub - ブログ＆まとめポータル',
   },
   description: 'ゲーム技術、AI、制作日記、日常、趣味エンタメの最新情報をまとめたポータルサイト',
+  keywords: ['ゲーム開発', 'AI技術', 'プログラミング', '個人開発', 'テックブログ', 'Portal Hub'],
+  authors: [{ name: 'Portal Hub' }],
+  alternates: {
+    canonical: '/',
+  },
   generator: 'v0.app',
   robots: {
     index: true,

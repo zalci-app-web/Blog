@@ -9,12 +9,12 @@ import type { Metadata, ResolvingMetadata } from 'next';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-const categoryMap: Record<string, { enum: 'game_tech' | 'ai_tech' | 'dev_diary' | 'daily_life' | 'hobbies', title: string, color: string }> = {
-    "game_tech": { enum: "game_tech", title: "ゲーム技術", color: "text-green-400 bg-green-500/20 border-green-500/30" },
-    "ai_tech": { enum: "ai_tech", title: "AI技術", color: "text-blue-400 bg-blue-500/20 border-blue-500/30" },
-    "dev_diary": { enum: "dev_diary", title: "制作中ゲーム日記", color: "text-slate-300 bg-slate-500/20 border-slate-500/30" },
-    "daily_life": { enum: "daily_life", title: "日常まとめ", color: "text-stone-600 bg-stone-500/20 border-stone-400/30" },
-    "hobbies": { enum: "hobbies", title: "趣味・エンタメ", color: "text-orange-600 bg-orange-500/20 border-orange-500/30" },
+const categoryMap: Record<string, { enum: 'game_tech' | 'ai_tech' | 'dev_diary' | 'daily_life' | 'hobbies', title: string, color: string, keywords: string[] }> = {
+    "game_tech": { enum: "game_tech", title: "ゲーム技術", color: "text-green-400 bg-green-500/20 border-green-500/30", keywords: ['ゲーム開発', 'ゲームプログラミング', '最適化', 'ゲームエンジン'] },
+    "ai_tech": { enum: "ai_tech", title: "AI技術", color: "text-blue-400 bg-blue-500/20 border-blue-500/30", keywords: ['AI技術', '大規模言語モデル', '画像生成AI', 'プロンプトエンジニアリング', 'LLM'] },
+    "dev_diary": { enum: "dev_diary", title: "制作中ゲーム日記", color: "text-slate-300 bg-slate-500/20 border-slate-500/30", keywords: ['個人開発', 'インディーゲーム', '開発日記', '自作ゲーム'] },
+    "daily_life": { enum: "daily_life", title: "日常まとめ", color: "text-stone-600 bg-stone-500/20 border-stone-400/30", keywords: ['日常', 'ライフスタイル', '読書記録', 'エンジニアの日常'] },
+    "hobbies": { enum: "hobbies", title: "趣味・エンタメ", color: "text-orange-600 bg-orange-500/20 border-orange-500/30", keywords: ['エンタメ', '趣味', 'ゲームレビュー'] },
 };
 
 export const revalidate = 60;
@@ -49,6 +49,11 @@ export async function generateMetadata(
     return {
         title: `${post.title} | ${categoryName}`,
         description: plainText,
+        keywords: [post.title, ...categoryMap[category].keywords],
+        alternates: {
+            // Absolute canonical URL
+            canonical: `/${category}/${slug}`,
+        },
         openGraph: {
             title: post.title,
             description: plainText,
@@ -113,22 +118,60 @@ export default async function ArticlePage({ params }: Props) {
     const publishDate = new Date(post.created_at).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
     const updateDate = new Date(post.updated_at).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
 
-    // 構造化データ (JSON-LD) - Article
-    const jsonLd = {
-        '@context': 'https://schema.org',
-        '@type': 'Article',
-        headline: post.title,
-        image: [
-            new URL(postImage, process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').toString()
-        ],
-        datePublished: post.created_at,
-        dateModified: post.updated_at,
-        author: [{
-            '@type': 'Person',
-            name: 'Portal Hub Author',
-            url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-        }]
-    };
+    // 構造化データ (JSON-LD) - Strict Article & BreadcrumbList
+    const jsonLd = [
+        {
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            headline: post.title,
+            image: [
+                new URL(postImage, process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').toString()
+            ],
+            datePublished: post.created_at,
+            dateModified: post.updated_at,
+            author: [{
+                '@type': 'Person',
+                name: 'Portal Hub Author',
+                url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+            }],
+            publisher: {
+                '@type': 'Organization',
+                name: 'Portal Hub',
+                logo: {
+                    '@type': 'ImageObject',
+                    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/icon.png`
+                }
+            },
+            mainEntityOfPage: {
+                '@type': 'WebPage',
+                '@id': `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/${category}/${slug}`
+            }
+        },
+        {
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+                {
+                    '@type': 'ListItem',
+                    position: 1,
+                    name: 'ホーム',
+                    item: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+                },
+                {
+                    '@type': 'ListItem',
+                    position: 2,
+                    name: categoryInfo.title,
+                    item: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/${category}`
+                },
+                {
+                    '@type': 'ListItem',
+                    position: 3,
+                    name: post.title,
+                    item: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/${category}/${slug}`
+                }
+            ]
+        }
+    ];
 
     return (
         <div className="flex min-h-screen flex-col bg-background">

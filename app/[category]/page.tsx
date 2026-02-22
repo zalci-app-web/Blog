@@ -6,13 +6,13 @@ import Link from "next/link";
 import { Clock, Home, ChevronRight } from "lucide-react";
 import { notFound } from "next/navigation";
 
-// Define the valid categories again for validation
-const categoryMap: Record<string, { enum: 'game_tech' | 'ai_tech' | 'dev_diary' | 'daily_life' | 'hobbies', title: string, color: string, description: string }> = {
-    "game_tech": { enum: "game_tech", title: "ゲーム技術", color: "text-green-400 bg-green-500/20 border-green-500/30", description: "グラフィックス最適化、物理エンジン、ネットコードなどゲーム開発の技術トピック" },
-    "ai_tech": { enum: "ai_tech", title: "AI技術", color: "text-blue-400 bg-blue-500/20 border-blue-500/30", description: "大規模言語モデル、画像生成AI、プロンプト設計の最新動向と実践" },
-    "dev_diary": { enum: "dev_diary", title: "制作中ゲーム日記", color: "text-slate-300 bg-slate-500/20 border-slate-500/30", description: "個人開発ゲームの進捗、技術的な試行錯誤、設計判断の記録" },
-    "daily_life": { enum: "daily_life", title: "日常まとめ", color: "text-stone-600 bg-stone-500/20 border-stone-400/30", description: "日々の気づき、読書メモ、生活の中で見つけた小さな発見" },
-    "hobbies": { enum: "hobbies", title: "趣味・エンタメ", color: "text-orange-600 bg-orange-500/20 border-orange-500/30", description: "映画、音楽、ゲームプレイ日記、お気に入りのコンテンツ紹介" },
+// Define the valid categories again for validation with keywords
+const categoryMap: Record<string, { enum: 'game_tech' | 'ai_tech' | 'dev_diary' | 'daily_life' | 'hobbies', title: string, color: string, description: string, keywords: string[] }> = {
+    "game_tech": { enum: "game_tech", title: "ゲーム技術", color: "text-green-400 bg-green-500/20 border-green-500/30", description: "グラフィックス最適化、物理エンジン、ネットコードなどゲーム開発の技術トピック", keywords: ['ゲーム開発', 'ゲームプログラミング', '最適化', 'ゲームエンジン'] },
+    "ai_tech": { enum: "ai_tech", title: "AI技術", color: "text-blue-400 bg-blue-500/20 border-blue-500/30", description: "大規模言語モデル、画像生成AI、プロンプト設計の最新動向と実践", keywords: ['AI技術', '大規模言語モデル', '画像生成AI', 'プロンプトエンジニアリング', 'LLM'] },
+    "dev_diary": { enum: "dev_diary", title: "制作中ゲーム日記", color: "text-slate-300 bg-slate-500/20 border-slate-500/30", description: "個人開発ゲームの進捗、技術的な試行錯誤、設計判断の記録", keywords: ['個人開発', 'インディーゲーム', '開発日記', '自作ゲーム'] },
+    "daily_life": { enum: "daily_life", title: "日常まとめ", color: "text-stone-600 bg-stone-500/20 border-stone-400/30", description: "日々の気づき、読書メモ、生活の中で見つけた小さな発見", keywords: ['日常', 'ライフスタイル', '読書記録', 'エンジニアの日常'] },
+    "hobbies": { enum: "hobbies", title: "趣味・エンタメ", color: "text-orange-600 bg-orange-500/20 border-orange-500/30", description: "映画、音楽、ゲームプレイ日記、お気に入りのコンテンツ紹介", keywords: ['エンタメ', '趣味', 'ゲームレビュー'] },
 };
 
 export const revalidate = 60; // optionally cache for 60s
@@ -36,6 +36,11 @@ export async function generateMetadata(
     return {
         title: `${info.title} 記事一覧`,
         description: info.description,
+        keywords: info.keywords,
+        alternates: {
+            // Absolute canonical URL
+            canonical: `/${category}`,
+        },
         openGraph: {
             title: `${info.title} 記事一覧 | Portal Hub`,
             description: info.description,
@@ -88,18 +93,38 @@ export default async function CategoryPage({ params }: Props) {
         };
     });
 
-    const jsonLd = {
-        '@context': 'https://schema.org',
-        '@type': 'CollectionPage',
-        name: `${categoryInfo.title} カテゴリの記事一覧`,
-        description: categoryInfo.description,
-        url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/${category}`,
-        isPartOf: {
-            '@type': 'WebSite',
-            name: 'Portal Hub',
-            url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+    const jsonLd = [
+        {
+            '@context': 'https://schema.org',
+            '@type': 'CollectionPage',
+            name: `${categoryInfo.title} カテゴリの記事一覧`,
+            description: categoryInfo.description,
+            url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/${category}`,
+            isPartOf: {
+                '@type': 'WebSite',
+                name: 'Portal Hub',
+                url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+            }
+        },
+        {
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+                {
+                    '@type': 'ListItem',
+                    position: 1,
+                    name: 'ホーム',
+                    item: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+                },
+                {
+                    '@type': 'ListItem',
+                    position: 2,
+                    name: categoryInfo.title,
+                    item: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/${category}`
+                }
+            ]
         }
-    };
+    ];
 
     return (
         <div className="flex min-h-screen flex-col bg-background">
