@@ -18,9 +18,46 @@ const notoSerifJP = Noto_Serif_JP({
 });
 
 export const metadata: Metadata = {
-  title: 'Portal Hub - ブログ＆まとめポータル',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+  title: {
+    template: '%s | Portal Hub',
+    default: 'Portal Hub - ブログ＆まとめポータル',
+  },
   description: 'ゲーム技術、AI、制作日記、日常、趣味エンタメの最新情報をまとめたポータルサイト',
   generator: 'v0.app',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'ja_JP',
+    url: '/',
+    siteName: 'Portal Hub',
+    title: 'Portal Hub - ブログ＆まとめポータル',
+    description: 'ゲーム技術、AI、制作日記、日常、趣味エンタメの最新情報をまとめたポータルサイト',
+    images: [
+      {
+        url: '/images/hero-game.jpg', // Placeholder global OGP mapping
+        width: 1200,
+        height: 630,
+        alt: 'Portal Hub - ブログ＆まとめポータル',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Portal Hub - ブログ＆まとめポータル',
+    description: 'ゲーム技術、AI、制作日記、日常、趣味エンタメの最新情報をまとめたポータルサイト',
+    images: ['/images/hero-game.jpg'],
+  },
   icons: {
     icon: [
       {
